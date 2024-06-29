@@ -1,4 +1,4 @@
-# HTMX + Llama.cpp ❤️
+# HTMX + Llama.cpp Server ❤️
 
 
 On machine with [llama.cpp](https://github.com/ggerganov/llama.cpp/)
