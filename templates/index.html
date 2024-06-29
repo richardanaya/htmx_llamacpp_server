@@ -1,0 +1,19 @@
+<!-- let's make a chat interface using jinja -->
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Epistemology</title>
+    <style>
+      .chat {
+        border: 1px solid black;
+        height: 300px;
+        width: 300px;
+        overflow: scroll;
+      }
+    </style>
+    <script src="https://unpkg.com/htmx.org@2.0.0"></script>
+  </head>
+  <body>
+    {% include "chat.html" %}
+  </body>
+</html>

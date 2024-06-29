@@ -1,0 +1,45 @@
+<div id="chat">
+  <div class="chat">
+    {% for message in messages %}
+    <p>{{ message.role }} : {{ message.content }}</p>
+    <input type="hidden" name="roles" value="{{ message.role }}" />
+    <input type="hidden" name="messages" value="{{ message.content }}" />
+    {% endfor %}
+  </div>
+  <div>
+    <input
+      placeholder="context"
+      type="text"
+      name="context"
+      value="{{ context }}"
+    />
+  </div>
+  <div>
+    <input
+      placeholder="message"
+      type="text"
+      name="user_message"
+      value="{{ user_message }}"
+    />
+  </div>
+  <div>
+    <button
+      hx-post="/send_message"
+      hx-trigger="click"
+      hx-target="#chat"
+      hx-swap="outerHTML"
+      hx-include="[name=context],[name=user_message],[name=messages],[name=roles]"
+    >
+      Send
+    </button>
+    <button
+      hx-post="/clear_messages"
+      hx-trigger="click"
+      hx-target="#chat"
+      hx-swap="outerHTML"
+      hx-include="[name=context]"
+    >
+      Clear
+    </button>
+  </div>
+</div>
