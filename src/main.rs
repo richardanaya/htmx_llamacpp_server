@@ -1,11 +1,13 @@
 use askama::Template;
-use axum::extract::State;
+use axum::extract::{FromRef, State};
 use axum::http::StatusCode;
+use axum::response::Redirect;
 use axum::response::{Html, Result};
 use axum::{
-    routing::{get, post},
+    routing::{delete, get, post},
     Router,
 };
+use axum_extra::extract::cookie::{Cookie, Key, PrivateCookieJar};
 use axum_extra::extract::Form;
 use axum_extra::response::Css;
 use clap::Parser;
@@ -14,7 +16,14 @@ use serde::Serialize;
 
 #[derive(Clone)]
 struct AppState {
+    key: Key,
     url: String,
+}
+
+impl FromRef<AppState> for Key {
+    fn from_ref(state: &AppState) -> Self {
+        state.key.clone()
+    }
 }
 
 /// Simple program to greet a person
@@ -24,6 +33,11 @@ struct Args {
     /// Name of the person to greet
     #[arg(short, long)]
     llamma_cpp_server: String,
+}
+
+#[derive(Deserialize, Serialize, Clone)]
+struct LoginParams {
+    username: String,
 }
 
 #[derive(Deserialize, Serialize, Clone)]
@@ -39,8 +53,8 @@ struct ClearMessagesPayload {
 
 #[derive(Deserialize, Serialize)]
 struct SendMessageRequest {
-    messages: Vec<String>,
-    roles: Vec<String>,
+    messages: Option<Vec<String>>,
+    roles: Option<Vec<String>>,
     context: String,
     user_message: String,
 }
@@ -81,6 +95,10 @@ struct ChatTemplate {
     user_message: String,
 }
 
+#[derive(Template)]
+#[template(path = "login.html")]
+struct LoginTemplate {}
+
 fn render_template(template: impl Template) -> Result<Html<String>, StatusCode> {
     let result = template.render();
     match result {
@@ -89,33 +107,63 @@ fn render_template(template: impl Template) -> Result<Html<String>, StatusCode> 
     }
 }
 
-async fn index() -> Result<Html<String>, StatusCode> {
-    render_template(ChatTemplate {
-        messages: vec![ChatMessage {
-            role: "AI".to_string(),
-            content: "Hello, welcome to a demo of HTMX and Llama.cpp server".to_string(),
-        }],
-        context: "".to_string(),
-        user_message: "".to_string(),
-    })
+async fn logout(jar: PrivateCookieJar) -> (PrivateCookieJar, Redirect) {
+    (jar.remove(Cookie::build("name")), Redirect::to("/"))
+}
+
+async fn login(
+    jar: PrivateCookieJar,
+    Form(params): Form<LoginParams>,
+) -> (PrivateCookieJar, Redirect) {
+    let updated_jar = jar.add(Cookie::new("name", params.username));
+    (updated_jar, Redirect::to("/"))
+}
+
+async fn index(jar: PrivateCookieJar) -> Result<Html<String>, StatusCode> {
+    let name = jar.get("name");
+
+    if let Some(name) = name {
+        render_template(ChatTemplate {
+            messages: vec![ChatMessage {
+                role: "AI".to_string(),
+                content: format!(
+                    "Hello {}, welcome to a demo of HTMX and Llama.cpp server",
+                    name.value().to_string()
+                )
+                .to_string(),
+            }],
+            context: "".to_string(),
+            user_message: "".to_string(),
+        })
+    } else {
+        render_template(LoginTemplate {})
+    }
 }
 
 async fn send_message(
+    jar: PrivateCookieJar,
     State(state): State<AppState>,
     Form(form): Form<SendMessageRequest>,
 ) -> Result<Html<String>, StatusCode> {
-    let mut chat_messages: Vec<ChatMessage> = form
-        .messages
+    let name = match jar.get("name") {
+        Some(x) => x,
+        None => return Err(StatusCode::UNAUTHORIZED),
+    };
+
+    let all_roles = form.roles.clone().unwrap_or(vec![]);
+    let all_messages = form.messages.clone().unwrap_or(vec![]);
+
+    let mut chat_messages: Vec<ChatMessage> = all_messages
         .iter()
         .enumerate()
         .map(|(i, x)| ChatMessage {
-            role: form.roles[i].clone(),
+            role: all_roles[i].clone(),
             content: x.clone(),
         })
         .collect();
 
     chat_messages.push(ChatMessage {
-        role: "User".to_string(),
+        role: name.value().to_string(),
         content: form.user_message.clone(),
     });
 
@@ -182,11 +230,12 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     // build our application with a single route
     let app = Router::new()
-        .route("/", get(index))
+        .route("/", get(index).merge(post(login)).merge(delete(logout)))
         .route("/send_message", post(send_message))
         .route("/clear_messages", post(clear_messages))
         .route("/style.css", get(get_style))
         .with_state(AppState {
+            key: Key::generate(),
             url: format!("{}/v1/chat/completions", args.llamma_cpp_server).to_string(),
         });
 

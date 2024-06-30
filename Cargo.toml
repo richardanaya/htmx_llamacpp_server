@@ -6,7 +6,7 @@ edition = "2021"
 [dependencies]
 askama = "0.12.1"
 axum = "0.7.5"
-axum-extra = { version = "0.9.3", features = ["form"] }
+axum-extra = { version = "0.9.3", features = ["form","cookie","cookie-private"] }
 clap = { version = "4.5.8", features = ["derive"] }
 reqwest = { version = "0.12.4", features = ["blocking","json"] }
 serde = { version = "1.0.203", features = ["derive"] }
