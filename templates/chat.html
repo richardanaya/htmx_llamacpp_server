@@ -39,7 +39,7 @@
         hx-post="/send_message"
         hx-trigger="click"
         hx-target="#chat"
-        hx-swap="outerHTML"
+        hx-swap="outerHTML show:bottom"
         hx-include="[name=context],[name=user_message],[name=messages],[name=roles]"
       >
         Send
@@ -51,7 +51,7 @@
         hx-post="/clear_messages"
         hx-trigger="click"
         hx-target="#chat"
-        hx-swap="outerHTML"
+        hx-swap="outerHTML show:bottom"
         hx-include="[name=context]"
       >
         Clear
