@@ -1,0 +1,43 @@
+<div id="chat">
+  <fieldset>
+    <legend>AI Output</legend>
+    <div class="chat">
+      {% for message in messages %}
+      <p>{{ message.role }} : {{ message.content }}</p>
+      <input type="hidden" name="roles" value="{{ message.role }}" />
+      <input type="hidden" name="messages" value="{{ message.content }}" />
+      {% endfor %}
+    </div>
+  </fieldset>
+  <fieldset>
+    <legend>AI Input</legend>
+    <p>
+      <label for="context">Context:</label>
+      <input id="context" class="full" placeholder="Pretend to be a robot ..." type="text" name="context"
+        value="{{ context }}" {% if context.len()==0 %} autofocus {% endif %} />
+    </p>
+    <p>
+      <label for="user_message">User Message:</label>
+      <input id="user_message" class="full" placeholder="Hello, robot ..." type="text" name="user_message"
+        value="{{ user_message }}" {% if context.len()>0 %} autofocus {% endif %} />
+    </p>
+    <p>
+      <button id="send" class="full" hx-post="/send_message" hx-trigger="click, keyup[key=='Enter'] from:body"
+        hx-target="#chat" hx-swap="outerHTML show:bottom"
+        hx-include="[name=context],[name=user_message],[name=messages],[name=roles]" hx-indicator="#send">
+        Send
+      </button>
+    </p>
+    <p>
+      <button class="full" hx-post="/clear_messages" hx-trigger="click" hx-target="#chat"
+        hx-swap="outerHTML show:bottom" hx-include="[name=context]">
+        Clear
+      </button>
+    </p>
+    <p>
+      <button class="full" hx-delete="/" hx-trigger="click" hx-target="body">
+        Restart
+      </button>
+    </p>
+  </fieldset>
+</div>

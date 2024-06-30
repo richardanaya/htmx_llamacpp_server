@@ -1,24 +1,8 @@
 <!-- let's make a chat interface using jinja -->
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>HTMX Llama.cpp Server</title>
-    <style>
-      .chat {
-        min-height: 300px;
-        width: 300px;
-        width: 100%;
-        overflow: scroll;
-      }
-      .full {
-        width: 100%;
-      }
-    </style>
-    <link rel="stylesheet" href="/style.css" />
-    <script src="https://unpkg.com/htmx.org@2"></script>
-  </head>
+  {% include "head.html" %}
   <body>
-    {% include "chat.html" %}
+    {% include "chat.jinja" %}
   </body>
 </html>

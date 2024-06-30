@@ -80,7 +80,7 @@ struct LlamaRequest {
 }
 
 #[derive(Template)]
-#[template(path = "chat.html")]
+#[template(path = "chat.jinja")]
 struct ChatFragmentTemplate {
     messages: Vec<ChatMessage>,
     context: String,
