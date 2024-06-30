@@ -92,7 +92,7 @@ async fn index() -> Result<Html<String>, StatusCode> {
     render_template(ChatTemplate {
         messages: vec![ChatMessage {
             role: "AI".to_string(),
-            content: "Hello, I am a bot".to_string(),
+            content: "Hello, welcome to a demo of HTMX and Llama.cpp server".to_string(),
         }],
         context: "".to_string(),
         user_message: "".to_string(),
