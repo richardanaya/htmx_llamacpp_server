@@ -7,6 +7,7 @@ use axum::{
     Router,
 };
 use axum_extra::extract::Form;
+use axum_extra::response::Css;
 use clap::Parser;
 use serde::Deserialize;
 use serde::Serialize;
@@ -171,6 +172,10 @@ async fn clear_messages(
     })
 }
 
+async fn get_style() -> Css<String> {
+    Css(include_str!("../static/style.css").to_string())
+}
+
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let args = Args::parse();
@@ -180,6 +185,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         .route("/", get(index))
         .route("/send_message", post(send_message))
         .route("/clear_messages", post(clear_messages))
+        .route("/style.css", get(get_style))
         .with_state(AppState {
             url: format!("{}/v1/chat/completions", args.llamma_cpp_server).to_string(),
         });
