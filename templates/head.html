@@ -11,9 +11,21 @@
     .full {
       width: 100%;
     }
-    button.htmx-request {
-      pointer-events: none;
-      opacity: 0.5;
+
+    button .default {
+      display: inline;
+    }
+
+    button .processing {
+      display: none;
+    }
+
+    button.htmx-request .default {
+      display: none;
+    }
+
+    button.htmx-request .processing {
+      display: inline;
     }
   </style>
   <link rel="stylesheet" href="/style.css" />
