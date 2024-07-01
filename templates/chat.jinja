@@ -23,7 +23,7 @@
         name="user_message" value="{{ user_message }}" {% if context.len()>0 %} autofocus {% endif %} />
     </p>
     <p>
-      <button id="send" class="full" hx-post="/send_message"
+      <button id="send" class="full" hx-post="/chat"
         hx-trigger="click queue:none, keyup[key=='Enter'] from:body queue:none" hx-target="#chat"
         hx-swap="outerHTML show:bottom" hx-include="[name=context],[name=user_message],[name=messages],[name=roles]"
         hx-indicator="#send">
@@ -31,8 +31,8 @@
       </button>
     </p>
     <p>
-      <button class="full" hx-post="/clear_messages" hx-trigger="click" hx-target="#chat"
-        hx-swap="outerHTML show:bottom" hx-include="[name=context]">
+      <button class="full" hx-delete="/chat" hx-trigger="click" hx-target="#chat" hx-swap="outerHTML show:bottom"
+        hx-include="[name=context]">
         Clear
       </button>
     </p>
