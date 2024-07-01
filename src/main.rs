@@ -274,7 +274,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let app = Router::new()
         .route("/", get(index).merge(post(login)).merge(delete(logout)))
         .route("/chat", post(send_message))
-        .route("/chat", delete(clear_messages))
+        .route("/chat/clear", post(clear_messages))
         .route("/chat/message", delete(delete_chat_message))
         .route("/chat/message/edit", post(edit_chat_message))
         .route("/chat/message", post(change_chat_message))
