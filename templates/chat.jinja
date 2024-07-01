@@ -6,7 +6,7 @@
       {% set id = loop.index0 %}
       {% set role = message.role.clone() %}
       {% set content = message.content.clone() %}
-      {% include "message.jinja" %}
+      {% include "chat/message.jinja" %}
       {% endfor %}
     </div>
   </fieldset>

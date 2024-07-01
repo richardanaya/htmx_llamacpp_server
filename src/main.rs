@@ -55,7 +55,7 @@ struct ChatMessage {
 }
 
 #[derive(Template)]
-#[template(path = "message.jinja")]
+#[template(path = "chat/message.jinja")]
 #[derive(Deserialize, Serialize, Clone)]
 struct ModifyChatMessage {
     id: String,
@@ -64,7 +64,7 @@ struct ModifyChatMessage {
 }
 
 #[derive(Template)]
-#[template(path = "message_edit.jinja")]
+#[template(path = "chat/message_edit.jinja")]
 #[derive(Deserialize, Serialize, Clone)]
 struct EditChatMessage {
     id: String,
