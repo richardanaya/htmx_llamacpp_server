@@ -54,6 +54,24 @@ struct ChatMessage {
     content: String,
 }
 
+#[derive(Template)]
+#[template(path = "message.jinja")]
+#[derive(Deserialize, Serialize, Clone)]
+struct ModifyChatMessage {
+    id: String,
+    role: String,
+    content: String,
+}
+
+#[derive(Template)]
+#[template(path = "message_edit.jinja")]
+#[derive(Deserialize, Serialize, Clone)]
+struct EditChatMessage {
+    id: String,
+    role: String,
+    content: String,
+}
+
 #[derive(Deserialize, Serialize)]
 struct ClearMessagesPayload {
     context: String,
@@ -61,8 +79,8 @@ struct ClearMessagesPayload {
 
 #[derive(Deserialize, Serialize)]
 struct SendMessageRequest {
-    messages: Option<Vec<String>>,
-    roles: Option<Vec<String>>,
+    content: Option<Vec<String>>,
+    role: Option<Vec<String>>,
     context: String,
     user_message: String,
 }
@@ -158,8 +176,8 @@ async fn send_message(
         None => return Err(StatusCode::UNAUTHORIZED),
     };
 
-    let all_roles = form.roles.clone().unwrap_or(vec![]);
-    let all_messages = form.messages.clone().unwrap_or(vec![]);
+    let all_roles = form.role.clone().unwrap_or(vec![]);
+    let all_messages = form.content.clone().unwrap_or(vec![]);
 
     let mut chat_messages: Vec<ChatMessage> = all_messages
         .iter()
@@ -232,6 +250,22 @@ async fn get_style() -> Css<String> {
     Css(include_str!("../static/style.css").to_string())
 }
 
+async fn delete_chat_message() -> Result<Html<String>, StatusCode> {
+    Ok(Html("".to_string()))
+}
+
+async fn edit_chat_message(
+    Form(edit_msg): Form<EditChatMessage>,
+) -> Result<Html<String>, StatusCode> {
+    render_template(edit_msg)
+}
+
+async fn change_chat_message(
+    Form(modify_msg): Form<ModifyChatMessage>,
+) -> Result<Html<String>, StatusCode> {
+    render_template(modify_msg)
+}
+
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let args = Args::parse();
@@ -241,6 +275,9 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         .route("/", get(index).merge(post(login)).merge(delete(logout)))
         .route("/send_message", post(send_message))
         .route("/clear_messages", post(clear_messages))
+        .route("/chat/message", delete(delete_chat_message))
+        .route("/chat/message/edit", post(edit_chat_message))
+        .route("/chat/message", post(change_chat_message))
         .route("/style.css", get(get_style))
         .with_state(AppState {
             key: Key::generate(),

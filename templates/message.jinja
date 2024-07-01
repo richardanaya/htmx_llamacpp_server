@@ -1,0 +1,8 @@
+<div id="chat_{{id}}">
+    <a href="#" hx-post="/chat/message/edit" hx-trigger="click" hx-target="#chat_{{id}}" hx-swap="outerHTML"
+        hx-include="#chat_{{id}}" hx-vals='{"id":"{{id}}"}'>edit</a> <a href="#" hx-delete="/chat/message"
+        hx-trigger="click" hx-target="#chat_{{id}}" hx-swap="outerHTML">delete</a>
+    <p>{{ role }} : {{ content }}</p>
+    <input type="hidden" name="role" value="{{ role }}" />
+    <input type="hidden" name="content" value="{{ content }}" />
+</div>

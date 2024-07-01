@@ -3,9 +3,10 @@
     <legend>AI Output</legend>
     <div class="chat">
       {% for message in messages %}
-      <p>{{ message.role }} : {{ message.content }}</p>
-      <input type="hidden" name="roles" value="{{ message.role }}" />
-      <input type="hidden" name="messages" value="{{ message.content }}" />
+      {% set id = loop.index0 %}
+      {% set role = message.role.clone() %}
+      {% set content = message.content.clone() %}
+      {% include "message.jinja" %}
       {% endfor %}
     </div>
   </fieldset>
@@ -13,13 +14,13 @@
     <legend>AI Input</legend>
     <p>
       <label for="context">Context:</label>
-      <input id="context" class="full" placeholder="Pretend to be a robot ..." type="text" name="context"
-        value="{{ context }}" {% if context.len()==0 %} autofocus {% endif %} />
+      <input id="context" class="full" autocomplete="off" placeholder="Pretend to be a robot ..." type="text"
+        name="context" value="{{ context }}" {% if context.len()==0 %} autofocus {% endif %} />
     </p>
     <p>
       <label for="user_message">User Message:</label>
-      <input id="user_message" class="full" placeholder="Hello, robot ..." type="text" name="user_message"
-        value="{{ user_message }}" {% if context.len()>0 %} autofocus {% endif %} />
+      <input id="user_message" class="full" autocomplete="off" placeholder="Hello, robot ..." type="text"
+        name="user_message" value="{{ user_message }}" {% if context.len()>0 %} autofocus {% endif %} />
     </p>
     <p>
       <button id="send" class="full" hx-post="/send_message"

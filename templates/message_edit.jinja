@@ -1,0 +1,9 @@
+<div id="chat_{{id}}">
+    <a href="#" hx-post=" /chat/message" hx-trigger="click" hx-target="#chat_{{id}}" hx-swap="outerHTML"
+        hx-include="#chat_{{id}}" hx-vals='{"id":"{{id}}"}'>
+        done
+    </a>
+    <p>{{ role }}</p>
+    <input type="text" class="full" name="content" value="{{ content }}" />
+    <input type="hidden" name="role" value="{{ role }}" />
+</div>
