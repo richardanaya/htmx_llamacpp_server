@@ -31,8 +31,16 @@ impl FromRef<AppState> for Key {
 #[command(version, about, long_about = None)]
 struct Args {
     /// Name of the person to greet
-    #[arg(short, long)]
+    #[arg(long = "llama")]
     llamma_cpp_server: String,
+
+    // Port to listen on
+    #[arg(long, default_value = "3000")]
+    port: u16,
+
+    // Host to listen on
+    #[arg(default_value = "127.0.0.1")]
+    host: String,
 }
 
 #[derive(Deserialize, Serialize, Clone)]
@@ -239,8 +247,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             url: format!("{}/v1/chat/completions", args.llamma_cpp_server).to_string(),
         });
 
-    // run our app with hyper, listening globally on port 3000
-    let listener = tokio::net::TcpListener::bind("0.0.0.0:3000").await?;
+    let addr = format!("{}:{}", args.host, args.port);
+    let listener = tokio::net::TcpListener::bind(addr).await?;
     println!("Listening on {}", listener.local_addr()?);
     Ok(axum::serve(listener, app).await?)
 }
