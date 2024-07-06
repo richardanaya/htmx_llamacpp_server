@@ -201,7 +201,7 @@ async fn send_message(
     chat_messages_with_system_context.insert(
         0,
         ChatMessage {
-            role: "System".to_string(),
+            role: "system".to_string(),
             content: form.context.clone(),
         },
     );
