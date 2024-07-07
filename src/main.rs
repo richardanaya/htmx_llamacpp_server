@@ -42,7 +42,7 @@ struct Args {
     port: u16,
 
     // Host to listen on
-    #[arg(default_value = "127.0.0.1")]
+    #[arg(long = "host", default_value = "127.0.0.1")]
     host: String,
 
     // HTTPS key file
