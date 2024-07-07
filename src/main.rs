@@ -302,6 +302,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     let addr: SocketAddr = format!("{}:{}", args.host, args.port).parse()?;
 
+    println!("Running on https://{}", addr);
+
     if let (Some(key_file), Some(cert_file)) = (&args.https_key_file, &args.https_cert_file) {
         let sc = RustlsConfig::from_pem_file(cert_file, key_file).await?;
         axum_server::bind_rustls(addr, sc)
