@@ -10,9 +10,12 @@ use axum::{
 use axum_extra::extract::cookie::{Cookie, Key, PrivateCookieJar};
 use axum_extra::extract::Form;
 use axum_extra::response::Css;
+use axum_server::tls_rustls::RustlsConfig;
 use clap::Parser;
 use serde::Deserialize;
 use serde::Serialize;
+use std::net::SocketAddr;
+use std::path::PathBuf;
 
 #[derive(Clone)]
 struct AppState {
@@ -41,6 +44,22 @@ struct Args {
     // Host to listen on
     #[arg(default_value = "127.0.0.1")]
     host: String,
+
+    // HTTPS key file
+    #[arg(
+        long,
+        value_name = "HTTPS_KEY_FILE",
+        help = "HTTPS key file (optional)"
+    )]
+    https_key_file: Option<PathBuf>,
+
+    // HTTPS cert file
+    #[arg(
+        long,
+        value_name = "HTTPS_CERT_FILE",
+        help = "HTTPS cert file (optional)"
+    )]
+    https_cert_file: Option<PathBuf>,
 }
 
 #[derive(Deserialize, Serialize, Clone)]
@@ -270,6 +289,10 @@ async fn change_chat_message(
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let args = Args::parse();
 
+    if args.https_key_file.is_some() != args.https_cert_file.is_some() {
+        panic!("Must provide both HTTPS key and cert files");
+    }
+
     // build our application with a single route
     let app = Router::new()
         .route("/", get(index).merge(post(login)).merge(delete(logout)))
@@ -284,8 +307,13 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             url: format!("{}/v1/chat/completions", args.llamma_cpp_server).to_string(),
         });
 
-    let addr = format!("{}:{}", args.host, args.port);
-    let listener = tokio::net::TcpListener::bind(addr).await?;
-    println!("Listening on {}", listener.local_addr()?);
-    Ok(axum::serve(listener, app).await?)
+    let cert = rcgen::generate_simple_self_signed(vec![args.host.to_owned()]).unwrap();
+    let cert_file = cert.serialize_der().unwrap();
+    let key_file = cert.serialize_private_key_der();
+    let sc = RustlsConfig::from_der(vec![cert_file], key_file).await?;
+    let addr: SocketAddr = format!("{}:{}", args.host, args.port).parse()?;
+    axum_server::bind_rustls(addr, sc)
+        .serve(app.into_make_service())
+        .await?;
+    Ok(())
 }
