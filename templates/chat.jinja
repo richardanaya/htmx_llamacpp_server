@@ -14,13 +14,15 @@
     <legend>AI Input</legend>
     <p>
       <label for="context">Context:</label>
-      <input id="context" class="full" autocomplete="off" placeholder="Pretend to be a robot ..." type="text"
-        name="context" value="{{ context }}" {% if context.len()==0 %} autofocus {% endif %} />
+      <input id="context" class="full" autocomplete="off" spellcheck="false" autocapitalize="off" placeholder=" Pretend
+        to be a robot ..." type="text" name="context" value="{{ context }}" {% if context.len()==0 %} autofocus {%
+        endif %} />
     </p>
     <p>
       <label for="user_message">User Message:</label>
-      <input id="user_message" class="full" autocomplete="off" placeholder="Hello, robot ..." type="text"
-        name="user_message" value="{{ user_message }}" {% if context.len()>0 %} autofocus {% endif %} />
+      <input id="user_message" class="full" autocomplete="off" spellcheck="false" autocapitalize="off"
+        placeholder="Hello, robot ..." type="text" name="user_message" value="{{ user_message }}" {% if context.len()>0
+      %} autofocus {% endif %} />
     </p>
     <p>
       <button id="send" class="full" hx-post="/chat"
