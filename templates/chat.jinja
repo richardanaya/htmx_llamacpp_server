@@ -27,7 +27,7 @@
     <p>
       <button id="send" class="full" hx-post="/chat"
         hx-trigger="click queue:none, keyup[key=='Enter'] from:body queue:none" hx-target="#chat"
-        hx-swap="outerHTML show:bottom" hx-include="[name=context],[name=user_message],[name=messages],[name=roles]"
+        hx-swap="outerHTML show:bottom" hx-include="[name=context],[name=user_message],[name=content],[name=role]"
         hx-indicator="#send">
         <span class="default">Send</span><span class="processing">Processing ...</span>
       </button>
