@@ -307,13 +307,22 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             url: format!("{}/v1/chat/completions", args.llamma_cpp_server).to_string(),
         });
 
-    let cert = rcgen::generate_simple_self_signed(vec![args.host.to_owned()]).unwrap();
-    let cert_file = cert.serialize_der().unwrap();
-    let key_file = cert.serialize_private_key_der();
-    let sc = RustlsConfig::from_der(vec![cert_file], key_file).await?;
     let addr: SocketAddr = format!("{}:{}", args.host, args.port).parse()?;
-    axum_server::bind_rustls(addr, sc)
-        .serve(app.into_make_service())
-        .await?;
+
+    if let (Some(key_file), Some(cert_file)) = (&args.https_key_file, &args.https_cert_file) {
+        let sc = RustlsConfig::from_pem_file(cert_file, key_file).await?;
+        axum_server::bind_rustls(addr, sc)
+            .serve(app.into_make_service())
+            .await?;
+    } else {
+        let cert = rcgen::generate_simple_self_signed(vec![args.host.to_owned()]).unwrap();
+        let cert_file = cert.serialize_der().unwrap();
+        let key_file = cert.serialize_private_key_der();
+        let sc = RustlsConfig::from_der(vec![cert_file], key_file).await?;
+        axum_server::bind_rustls(addr, sc)
+            .serve(app.into_make_service())
+            .await?;
+    }
+
     Ok(())
 }
