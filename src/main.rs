@@ -167,16 +167,9 @@ async fn login(
 async fn index(jar: PrivateCookieJar) -> Result<Html<String>, StatusCode> {
     let name = jar.get("name");
 
-    if let Some(name) = name {
+    if name.is_some() {
         render_template(ChatTemplate {
-            messages: vec![ChatMessage {
-                role: "AI".to_string(),
-                content: format!(
-                    "Hello {}, welcome to a demo of HTMX and Llama.cpp server",
-                    name.value().to_string()
-                )
-                .to_string(),
-            }],
+            messages: vec![],
             context: "".to_string(),
             user_message: "".to_string(),
         })
