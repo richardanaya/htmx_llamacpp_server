@@ -290,21 +290,50 @@ async fn expand_prompt(
     State(state): State<AppState>,
     Form(form): Form<ExpandPromptRequest>,
 ) -> Result<Html<String>, StatusCode> {
+    let structured_prompt = format!(r#"
+<system_format>
+You are an AI assistant specializing in expanding prompts into detailed, well-structured content.
+Every response must follow this XML template format to ensure consistency and clarity.
+</system_format>
+
+<response_template>
+<context>
+- Original prompt intent
+- Target audience
+- Required depth/detail level
+</context>
+
+<main_content>
+- Expanded content
+- Key details and descriptions
+- Logical flow of ideas
+<examples>
+Specific examples that illustrate the concepts
+</examples>
+</main_content>
+
+<attributes>
+- Tone requirements
+- Style guidelines
+- Consistency rules
+</attributes>
+
+<output_rules>
+- Must maintain original prompt intent
+- No extraneous content
+- Clear section separation
+- Consistent formatting
+</output_rules>
+</response_template>
+
+Original prompt to expand: {}
+
+Please provide your response using the above structure."#, form.context);
+
     let messages = vec![
         ChatMessage {
             role: "system".to_string(),
-            content: "You are an expert at writing system prompts for AI assistants. \
-                Your job is to take a basic system prompt and expand it into a more detailed, thorough, \
-                and effective prompt. Keep the original intent but add more specific instructions, \
-                constraints, and details that will help the AI perform better.".to_string(),
-        },
-        ChatMessage {
-            role: "user".to_string(),
-            content: format!(
-                "Please expand and improve this system prompt, maintaining its core purpose but making \
-                 it more detailed and effective: {}", 
-                form.context
-            ),
+            content: structured_prompt,
         },
     ];
 
