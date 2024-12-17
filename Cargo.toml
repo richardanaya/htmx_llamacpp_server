@@ -2,6 +2,8 @@
 name = "htmx_llamacpp_server"
 version = "0.1.1"
 edition = "2021"
+description = "A simple server for the htmx_llamacpp project"
+license = "MIT" 
 
 [dependencies]
 askama = "0.12.1"
