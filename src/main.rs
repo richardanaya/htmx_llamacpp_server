@@ -9,7 +9,7 @@ use axum::{
 };
 use axum_extra::extract::cookie::{Cookie, Key, PrivateCookieJar};
 use axum_extra::extract::Form;
-use axum_extra::response::Css;
+use axum_extra::response::{Css, JavaScript};
 use axum_server::tls_rustls::RustlsConfig;
 use clap::Parser;
 use serde::Deserialize;
@@ -271,6 +271,10 @@ async fn get_style() -> Css<String> {
     Css(include_str!("../static/style.css").to_string())
 }
 
+async fn get_htmx() -> Result<JavaScript<String>> {
+    Ok(JavaScript(include_str!("../static/htmx.js").to_string()))
+}
+
 async fn delete_chat_message() -> Result<Html<String>, StatusCode> {
     Ok(Html("".to_string()))
 }
@@ -414,6 +418,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         .route("/chat/message", post(change_chat_message))
         .route("/chat/regenerate", post(regenerate_message))
         .route("/style.css", get(get_style))
+        .route("/htmx.js", get(get_htmx))
         .route("/chat/expand-prompt", post(expand_prompt))
         .with_state(AppState {
             key: Key::generate(),

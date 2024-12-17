@@ -3,8 +3,9 @@
         hx-include="#chat_{{id}}" hx-vals='{"id":"{{id}}"}'>edit</a> <a href="#" hx-delete="/chat/message"
         hx-trigger="click" hx-target="#chat_{{id}}" hx-swap="outerHTML">delete</a>
     {% if role == "AI" %}
-    <a href="#" hx-post="/chat/regenerate" hx-trigger="click" hx-target="#chat-messages" 
-        hx-include="form" hx-vals='{"regenerate_index":"{{id}}"}'
+    <a href="#" hx-post="/chat/regenerate" hx-trigger="click" hx-target="#chat"
+        hx-swap="outerHTML show:bottom" hx-include="[name=context],[name=user_message],[name=content],[name=role]"
+        hx-indicator="#send" hx-vals='{"regenerate_index":"{{id}}"}'
         hx-swap="innerHTML">regenerate</a>
     {% endif %}
     <p>{{ role }} : {{ content }}</p>
