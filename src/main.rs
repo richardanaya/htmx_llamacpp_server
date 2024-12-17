@@ -144,6 +144,11 @@ struct ChatTemplate {
 #[template(path = "login.html")]
 struct LoginTemplate {}
 
+#[derive(Deserialize)]
+struct ExpandPromptRequest {
+    context: String,
+}
+
 fn render_template(template: impl Template) -> Result<Html<String>, StatusCode> {
     let result = template.render();
     match result {
@@ -178,6 +183,30 @@ async fn index(jar: PrivateCookieJar) -> Result<Html<String>, StatusCode> {
     }
 }
 
+async fn send_ai_message(
+    url: &str,
+    messages: Vec<ChatMessage>,
+) -> Result<String, StatusCode> {
+    let client = reqwest::Client::new();
+
+    let data = LlamaRequest {
+        model: "gpt-3.5-turbo".to_string(),
+        messages,
+    };
+
+    let response = match client.post(url).json(&data).send().await {
+        Ok(x) => x,
+        Err(_) => return Err(StatusCode::INTERNAL_SERVER_ERROR),
+    };
+
+    let body = match response.json::<LlamaResponse>().await {
+        Ok(x) => x,
+        Err(_) => return Err(StatusCode::INTERNAL_SERVER_ERROR),
+    };
+
+    Ok(body.choices[0].message.content.clone())
+}
+
 async fn send_message(
     jar: PrivateCookieJar,
     State(state): State<AppState>,
@@ -205,45 +234,24 @@ async fn send_message(
         content: form.user_message.clone(),
     });
 
-    let client = reqwest::Client::new();
-
-    let mut chat_messages_with_system_context = chat_messages.clone();
-
-    // add context to front
-    chat_messages_with_system_context.insert(
-        0,
+    let mut ai_messages = vec![
         ChatMessage {
             role: "system".to_string(),
             content: form.context.clone(),
-        },
-    );
+        }
+    ];
+    ai_messages.extend(chat_messages.iter().cloned());
 
-    let data: LlamaRequest = LlamaRequest {
-        model: "gpt-3.5-turbo".to_string(),
-        messages: chat_messages_with_system_context.clone(),
-    };
+    let response = send_ai_message(&state.url, ai_messages).await?;
 
-    let response = match client.post(state.url).json(&data).send().await {
-        Ok(x) => x,
-        Err(_) => return Err(StatusCode::INTERNAL_SERVER_ERROR),
-    };
-
-    let body = match response.json::<LlamaResponse>().await {
-        Ok(x) => x,
-        Err(_) => return Err(StatusCode::INTERNAL_SERVER_ERROR),
-    };
-
-    let response_message = body.choices[0].message.content.clone();
-
-    // TODO: ai generation
     chat_messages.push(ChatMessage {
         role: "AI".to_string(),
-        content: response_message,
+        content: response,
     });
 
     render_template(ChatFragmentTemplate {
         messages: chat_messages,
-        context: form.context.clone(),
+        context: form.context,
         user_message: "".to_string(),
     })
 }
@@ -278,6 +286,37 @@ async fn change_chat_message(
     render_template(modify_msg)
 }
 
+async fn expand_prompt(
+    State(state): State<AppState>,
+    Form(form): Form<ExpandPromptRequest>,
+) -> Result<Html<String>, StatusCode> {
+    let messages = vec![
+        ChatMessage {
+            role: "system".to_string(),
+            content: "You are an expert at writing system prompts for AI assistants. \
+                Your job is to take a basic system prompt and expand it into a more detailed, thorough, \
+                and effective prompt. Keep the original intent but add more specific instructions, \
+                constraints, and details that will help the AI perform better.".to_string(),
+        },
+        ChatMessage {
+            role: "user".to_string(),
+            content: format!(
+                "Please expand and improve this system prompt, maintaining its core purpose but making \
+                 it more detailed and effective: {}", 
+                form.context
+            ),
+        },
+    ];
+
+    let response = send_ai_message(&state.url, messages).await?;
+
+    Ok(Html(format!(
+        "<input id='context' class='full' autocomplete='off' spellcheck='false' autocapitalize='off' autocorrect='off' \
+         placeholder='Set AI behavior and constraints...' type='text' name='context' value='{}' />",
+        response.replace("'", "&apos;")
+    )))
+}
+
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let args = Args::parse();
@@ -295,6 +334,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         .route("/chat/message/edit", post(edit_chat_message))
         .route("/chat/message", post(change_chat_message))
         .route("/style.css", get(get_style))
+        .route("/chat/expand-prompt", post(expand_prompt))
         .with_state(AppState {
             key: Key::generate(),
             url: format!("{}/v1/chat/completions", args.llamma_cpp_server).to_string(),

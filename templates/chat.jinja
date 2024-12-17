@@ -13,10 +13,20 @@
   <fieldset>
     <legend>AI Input</legend>
     <p>
-      <label for="context">Context:</label>
-      <input id="context" class="full" autocomplete="off" spellcheck="false" autocapitalize="off" autocorrect="off"
-        placeholder=" Pretend to be a robot ..." type="text" name="context" value="{{ context }}" {% if context.len()==0
-        %} autofocus {% endif %} />
+      <label for="context">System Prompt:</label>
+      <div class="system-prompt-container">
+        <input id="context" class="full" autocomplete="off" spellcheck="false" autocapitalize="off" autocorrect="off"
+          placeholder="Set AI behavior and constraints..." type="text" name="context" value="{{ context }}" {% if context.len()==0
+          %} autofocus {% endif %} />
+        <button class="expand-prompt" hx-post="/chat/expand-prompt" 
+          hx-target="#context" 
+          hx-include="[name=context]"
+          hx-swap="outerHTML"
+          title="Expand system prompt using AI">
+          <span class="default">✨</span>
+          <span class="processing">...</span>
+        </button>
+      </div>
     </p>
     <p>
       <label for="user_message">User Message:</label>

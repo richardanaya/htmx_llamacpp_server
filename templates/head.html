@@ -32,6 +32,33 @@
     body {
       overscroll-behavior: none;
     }
+
+    .system-prompt-container {
+      display: flex;
+      gap: 8px;
+    }
+
+    .expand-prompt {
+      padding: 0 12px;
+      white-space: nowrap;
+      cursor: pointer;
+    }
+
+    button.expand-prompt .default {
+      display: inline;
+    }
+
+    button.expand-prompt .processing {
+      display: none;
+    }
+
+    button.expand-prompt.htmx-request .default {
+      display: none;
+    }
+
+    button.expand-prompt.htmx-request .processing {
+      display: inline;
+    }
   </style>
   <link rel="stylesheet" href="/style.css" />
   <script src="https://unpkg.com/htmx.org@2"></script>
