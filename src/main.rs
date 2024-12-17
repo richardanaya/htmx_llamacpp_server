@@ -102,6 +102,7 @@ struct SendMessageRequest {
     role: Option<Vec<String>>,
     context: String,
     user_message: String,
+    regenerate_index: Option<String>,
 }
 
 #[derive(Serialize, Deserialize)]
@@ -346,6 +347,55 @@ Please provide your response using the above structure."#, form.context);
     )))
 }
 
+async fn regenerate_message(
+    jar: PrivateCookieJar,
+    State(state): State<AppState>,
+    Form(form): Form<SendMessageRequest>,
+) -> Result<Html<String>, StatusCode> {
+    if jar.get("name").is_none() {
+        return Err(StatusCode::UNAUTHORIZED);
+    }
+
+    let all_roles = form.role.clone().unwrap_or(vec![]);
+    let all_messages = form.content.clone().unwrap_or(vec![]);
+
+    let mut chat_messages: Vec<ChatMessage> = all_messages
+        .iter()
+        .enumerate()
+        .map(|(i, x)| ChatMessage {
+            role: all_roles[i].clone(),
+            content: x.clone(),
+        })
+        .collect();
+    
+    if let Some(index) = form.regenerate_index {
+        if let Ok(idx) = index.parse::<usize>() {
+            chat_messages.truncate(idx);
+        }
+    }
+
+    let mut ai_messages = vec![
+        ChatMessage {
+            role: "system".to_string(),
+            content: form.context.clone(),
+        }
+    ];
+    ai_messages.extend(chat_messages.iter().cloned());
+
+    let response = send_ai_message(&state.url, ai_messages).await?;
+
+    chat_messages.push(ChatMessage {
+        role: "AI".to_string(),
+        content: response,
+    });
+
+    render_template(ChatFragmentTemplate {
+        messages: chat_messages,
+        context: form.context,
+        user_message: "".to_string(),
+    })
+}
+
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let args = Args::parse();
@@ -362,6 +412,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         .route("/chat/message", delete(delete_chat_message))
         .route("/chat/message/edit", post(edit_chat_message))
         .route("/chat/message", post(change_chat_message))
+        .route("/chat/regenerate", post(regenerate_message))
         .route("/style.css", get(get_style))
         .route("/chat/expand-prompt", post(expand_prompt))
         .with_state(AppState {

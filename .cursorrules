@@ -1,0 +1,3 @@
+Remember the HTMX returns HTML, so you need to return HTML.
+Make high quality code, you can do this!
+I use the askama crate for templating, so you need to use it, dont' get too fancy with the templates.

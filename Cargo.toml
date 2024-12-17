@@ -1,6 +1,6 @@
 [package]
 name = "htmx_llamacpp_server"
-version = "0.1.2"
+version = "0.1.3"
 edition = "2021"
 description = "A simple server for the htmx_llamacpp project"
 license = "MIT" 
