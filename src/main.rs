@@ -299,56 +299,27 @@ async fn expand_prompt(
 ) -> Result<Html<String>, StatusCode> {
     let structured_prompt = format!(
         r#"
-<system_format>
-You are an AI assistant specializing in expanding prompts into detailed, well-structured content.
-Every response must follow this XML template format to ensure consistency and clarity.
-</system_format>
-
-<response_template>
-<context>
-- Original prompt intent
-- Target audience
-- Required depth/detail level
-</context>
-
-<main_content>
-- Expanded content
-- Key details and descriptions
-- Logical flow of ideas
-<examples>
-Specific examples that illustrate the concepts
-</examples>
-</main_content>
-
-<attributes>
-- Tone requirements
-- Style guidelines
-- Consistency rules
-</attributes>
-
-<output_rules>
-- Must maintain original prompt intent
-- No extraneous content
-- Clear section separation
-- Consistent formatting
-</output_rules>
-</response_template>
-
-Original prompt to expand: {}
-
-Please provide your response using the above structure."#,
-        form.context
+    You are an AI assistant specializing in expanding prompts into detailed, well-structured content for persona prompts. 
+    Make sure the response of the personas is never too long, emphasize to always reply with a paragraph of a few sentences.
+    Avoid using XML or JSON. Give examples of behavior. Try to cover a broad range of aspects of the persona.
+    "#
     );
 
-    let messages = vec![ChatMessage {
-        role: "system".to_string(),
-        content: structured_prompt,
-    }];
+    let messages = vec![
+        ChatMessage {
+            role: "system".to_string(),
+            content: structured_prompt,
+        },
+        ChatMessage {
+            role: "system".to_string(),
+            content: format!("Make me a persona prompt for {}", form.context.clone()),
+        },
+    ];
 
     let response = send_ai_message(&state.url, messages).await?;
 
     Ok(Html(format!(
-        "<textarea id='context' class='full' autocomplete='off' spellcheck='false' autocapitalize='off' autocorrect='off' \
+        "<textarea id='context' class='full' autocomplete='off' rows="10" spellcheck='false' autocapitalize='off' autocorrect='off' \
          placeholder='Set AI behavior and constraints...' name='context'>{}</textarea>",
         response.replace("'", "&apos;")
     )))
