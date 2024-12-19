@@ -11,6 +11,36 @@
   --color-input-background: #dcd8c0;
   --animation-speed: 0.3s;
 }
+
+@media (max-width: 600px) {
+  body {
+    font-size: 0.9em;
+    padding: 1rem;
+  }
+
+  h1 {
+    font-size: 1.5em;
+    letter-spacing: 0.3rem;
+  }
+
+  h2 {
+    font-size: 1.2em;
+    padding: 0.1rem 0.5rem;
+  }
+
+  button, input[type="submit"], input[type="button"], input[type="reset"] {
+    padding: 0.4rem;
+    font-size: 0.9em;
+  }
+
+  figure {
+    padding: 0.3rem;
+  }
+
+  figure > figcaption {
+    font-size: 1rem;
+  }
+}
  */
 /* let's make a dark theme */
 
