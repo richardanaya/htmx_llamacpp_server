@@ -249,11 +249,18 @@ async fn send_message(
         content: response,
     });
 
-    render_template(ChatFragmentTemplate {
+    let context_input = format!(
+        "<input type='hidden' name='context' value='{}' />",
+        form.context.replace("'", "&apos;")
+    );
+
+    let chat_fragment = ChatFragmentTemplate {
         messages: chat_messages,
-        context: form.context,
+        context: context_input,
         user_message: "".to_string(),
-    })
+    };
+
+    render_template(chat_fragment)
 }
 
 async fn clear_messages(
@@ -345,8 +352,8 @@ Please provide your response using the above structure."#,
     let response = send_ai_message(&state.url, messages).await?;
 
     Ok(Html(format!(
-        "<input id='context' class='full' autocomplete='off' spellcheck='false' autocapitalize='off' autocorrect='off' \
-         placeholder='Set AI behavior and constraints...' type='text' name='context' value='{}' />",
+        "<textarea id='context' class='full' autocomplete='off' spellcheck='false' autocapitalize='off' autocorrect='off' \
+         placeholder='Set AI behavior and constraints...' name='context'>{}</textarea>",
         response.replace("'", "&apos;")
     )))
 }
