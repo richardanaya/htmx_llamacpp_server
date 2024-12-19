@@ -319,7 +319,7 @@ async fn expand_prompt(
     let response = send_ai_message(&state.url, messages).await?;
 
     Ok(Html(format!(
-        "<textarea id='context' class='full' autocomplete='off' rows="10" spellcheck='false' autocapitalize='off' autocorrect='off' \
+        "<textarea id='context' class='full' autocomplete='off' rows='10' spellcheck='false' autocapitalize='off' autocorrect='off' \
          placeholder='Set AI behavior and constraints...' name='context'>{}</textarea>",
         response.replace("'", "&apos;")
     )))
