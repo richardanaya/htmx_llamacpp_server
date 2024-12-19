@@ -12,6 +12,7 @@
   </fieldset>
   <fieldset>
     <legend>AI Input</legend>
+    {% if messages.len() == 0 %}
     <p>
       <label for="context">System Prompt:</label>
       <div class="system-prompt-container">
@@ -28,6 +29,10 @@
         </button>
       </div>
     </p>
+    {% endif %}
+    {% if messages.len() > 0 %}
+    <input id="context" type="hidden" name="context" value="{{ context }}"/>
+    {% endif %}
     <p>
       <label for="user_message">User Message:</label>
       <input id="user_message" class="full" autocomplete="off" spellcheck="false" autocapitalize="off" autocorrect="off"

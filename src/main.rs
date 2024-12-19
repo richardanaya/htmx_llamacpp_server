@@ -245,10 +245,7 @@ async fn send_message(
         content: response,
     });
 
-    let context_input = format!(
-        "<input type='hidden' name='context' value='{}' />",
-        form.context.replace("'", "&apos;")
-    );
+    let context_input = form.context;
 
     let chat_fragment = ChatFragmentTemplate {
         messages: chat_messages,
@@ -300,8 +297,7 @@ async fn expand_prompt(
     let structured_prompt = format!(
         r#"
     You are an AI assistant specializing in expanding prompts into detailed, well-structured content for persona prompts. 
-    Make sure the response of the personas is never too long, emphasize to always reply with a paragraph of a few sentences.
-    Avoid using XML or JSON. Give examples of behavior. Try to cover a broad range of aspects of the persona.
+    Make sure the response of the personas is never too long, emphasize to always reply with a paragraph of a few sentences. Avoid using XML or JSON. Give examples of behavior. Try to cover a broad range of aspects of the
     "#
     );
 
@@ -319,7 +315,7 @@ async fn expand_prompt(
     let response = send_ai_message(&state.url, messages).await?;
 
     Ok(Html(format!(
-        "<textarea id='context' class='full' autocomplete='off' rows='10' spellcheck='false' autocapitalize='off' autocorrect='off' \
+        "<textarea id='context' class='full' autocomplete='off' rows='10 spellcheck='false' autocapitalize='off' autocorrect='off' \
          placeholder='Set AI behavior and constraints...' name='context'>{}</textarea>",
         response.replace("'", "&apos;")
     )))
