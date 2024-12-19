@@ -170,6 +170,8 @@ async fn login(
     (updated_jar, Redirect::to("/"))
 }
 
+// inject a function here that adds two numbers AI!
+
 async fn index(jar: PrivateCookieJar) -> Result<Html<String>, StatusCode> {
     let name = jar.get("name");
 
@@ -184,10 +186,7 @@ async fn index(jar: PrivateCookieJar) -> Result<Html<String>, StatusCode> {
     }
 }
 
-async fn send_ai_message(
-    url: &str,
-    messages: Vec<ChatMessage>,
-) -> Result<String, StatusCode> {
+async fn send_ai_message(url: &str, messages: Vec<ChatMessage>) -> Result<String, StatusCode> {
     let client = reqwest::Client::new();
 
     let data = LlamaRequest {
@@ -235,12 +234,10 @@ async fn send_message(
         content: form.user_message.clone(),
     });
 
-    let mut ai_messages = vec![
-        ChatMessage {
-            role: "system".to_string(),
-            content: form.context.clone(),
-        }
-    ];
+    let mut ai_messages = vec![ChatMessage {
+        role: "system".to_string(),
+        content: form.context.clone(),
+    }];
     ai_messages.extend(chat_messages.iter().cloned());
 
     let response = send_ai_message(&state.url, ai_messages).await?;
@@ -295,7 +292,8 @@ async fn expand_prompt(
     State(state): State<AppState>,
     Form(form): Form<ExpandPromptRequest>,
 ) -> Result<Html<String>, StatusCode> {
-    let structured_prompt = format!(r#"
+    let structured_prompt = format!(
+        r#"
 <system_format>
 You are an AI assistant specializing in expanding prompts into detailed, well-structured content.
 Every response must follow this XML template format to ensure consistency and clarity.
@@ -333,14 +331,14 @@ Specific examples that illustrate the concepts
 
 Original prompt to expand: {}
 
-Please provide your response using the above structure."#, form.context);
+Please provide your response using the above structure."#,
+        form.context
+    );
 
-    let messages = vec![
-        ChatMessage {
-            role: "system".to_string(),
-            content: structured_prompt,
-        },
-    ];
+    let messages = vec![ChatMessage {
+        role: "system".to_string(),
+        content: structured_prompt,
+    }];
 
     let response = send_ai_message(&state.url, messages).await?;
 
@@ -371,19 +369,17 @@ async fn regenerate_message(
             content: x.clone(),
         })
         .collect();
-    
+
     if let Some(index) = form.regenerate_index {
         if let Ok(idx) = index.parse::<usize>() {
             chat_messages.truncate(idx);
         }
     }
 
-    let mut ai_messages = vec![
-        ChatMessage {
-            role: "system".to_string(),
-            content: form.context.clone(),
-        }
-    ];
+    let mut ai_messages = vec![ChatMessage {
+        role: "system".to_string(),
+        content: form.context.clone(),
+    }];
     ai_messages.extend(chat_messages.iter().cloned());
 
     let response = send_ai_message(&state.url, ai_messages).await?;
