@@ -170,7 +170,9 @@ async fn login(
     (updated_jar, Redirect::to("/"))
 }
 
-// inject a function here that adds two numbers AI!
+fn add_two_numbers(a: i32, b: i32) -> i32 {
+    a + b
+}
 
 async fn index(jar: PrivateCookieJar) -> Result<Html<String>, StatusCode> {
     let name = jar.get("name");
