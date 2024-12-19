@@ -301,6 +301,7 @@ async fn expand_prompt(
     State(state): State<AppState>,
     Form(form): Form<ExpandPromptRequest>,
 ) -> Result<Html<String>, StatusCode> {
+<<<<<<< Updated upstream
     let structured_prompt = format!(
         r#"
 <system_format>
@@ -348,6 +349,22 @@ Please provide your response using the above structure."#,
         role: "system".to_string(),
         content: structured_prompt,
     }];
+=======
+    let structured_prompt = format!(r#"
+You are an AI assistant specializing in expanding prompts into detailed, well-structured content for persona promps. Make sure the response of the personas is never too long, emphasize to always reply with a paragraph of a few sentences.
+"#);
+
+    let messages = vec![
+        ChatMessage {
+            role: "system".to_string(),
+            content: structured_prompt,
+        },
+        ChatMessage {
+            role: "system".to_string(),
+            content: format!("Make me a persona prompt for {}", form.context.clone()),
+        }
+    ];
+>>>>>>> Stashed changes
 
     let response = send_ai_message(&state.url, messages).await?;
 
