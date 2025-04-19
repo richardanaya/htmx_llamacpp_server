@@ -172,15 +172,6 @@ button:focus,
   gap: var(--size-3);
 }
 
-/* Message styling */
-#chat_0,
-[id^="chat_"] {
-  background-color: var(--surface-2);
-  border-radius: var(--radius-2);
-  padding: var(--size-3);
-  position: relative;
-}
-
 [id^="chat_"] p {
   margin: var(--size-2) 0 0;
   line-height: var(--font-lineheight-3);
@@ -243,7 +234,7 @@ button:focus,
 .expand-prompt,
 .regenerate-prompt {
   width: var(--button-size);
-  height: var(--button-size);
+  height: var(--size-7);
   border-radius: var(--radius-round);
   background-color: var(--surface-3);
   border: none;
