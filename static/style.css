@@ -213,7 +213,6 @@ button:focus,
   display: flex;
   align-items: flex-start;
   gap: var(--size-2);
-  margin-bottom: var(--size-3);
 }
 
 .system-prompt-content {
