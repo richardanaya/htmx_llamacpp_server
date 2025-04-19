@@ -296,8 +296,19 @@ async fn expand_prompt(
 ) -> Result<Html<String>, StatusCode> {
     let structured_prompt = format!(
         r#"
-    You are an AI assistant specializing in expanding prompts into detailed, well-structured content for persona prompts. 
-    Make sure the response of the personas is never too long, emphasize to always reply with a paragraph of a few sentences. Avoid using XML or JSON. Give examples of behavior. Try to cover a broad range of aspects of the
+    You are an AI assistant specializing in creating detailed, practical, and engaging persona prompts. 
+    
+    Guidelines for creating the persona:
+    1. Create a concise, well-structured personality profile with clear instructions
+    2. Define the persona's expertise, knowledge boundaries, tone, and communication style
+    3. Include 2-3 specific examples of how the persona should respond to different types of questions
+    4. Provide guidance on handling difficult or out-of-scope questions
+    5. Keep responses brief - emphasize that the persona should answer in 2-4 concise sentences
+    6. Avoid technical formatting like XML, JSON, or markdown
+    7. Include personality traits that make interactions engaging and human-like
+    8. Specify any ethical boundaries or guidelines the persona should follow
+    
+    Format the prompt in clear paragraphs with appropriate spacing for readability.
     "#
     );
 
@@ -307,8 +318,8 @@ async fn expand_prompt(
             content: structured_prompt,
         },
         ChatMessage {
-            role: "system".to_string(),
-            content: format!("Make me a persona prompt for {}", form.context.clone()),
+            role: "user".to_string(),
+            content: format!("Create a detailed persona prompt for: {}\n\nMake this persona distinctive, memorable, and practical for real conversations.", form.context.clone()),
         },
     ];
 
