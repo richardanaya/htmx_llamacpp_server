@@ -273,6 +273,14 @@ async fn get_style() -> Css<String> {
     Css(include_str!("../static/style.css").to_string())
 }
 
+async fn get_normalize() -> Css<String> {
+    Css(include_str!("../static/normalize.min.css").to_string())
+}
+
+async fn get_open_props() -> Css<String> {
+    Css(include_str!("../static/open-props.css").to_string())
+}
+
 async fn get_htmx() -> Result<JavaScript<String>> {
     Ok(JavaScript(include_str!("../static/htmx.js").to_string()))
 }
@@ -321,10 +329,6 @@ async fn expand_prompt(
     } else {
         form.context.clone()
     };
-    
-    // Debug log to help diagnose
-    println!("Expand prompt: context='{}', original_prompt={:?}, regenerate={:?}", 
-        form.context, form.original_prompt, form.regenerate);
 
     let messages = vec![
         ChatMessage {
@@ -340,22 +344,27 @@ async fn expand_prompt(
     let response = send_ai_message(&state.url, messages).await?;
 
     // Store the original prompt text in a hidden input
-    let original_prompt_input = format!("<input type='hidden' name='original_prompt' value='{}'/>", 
-        prompt_text.replace("'", "&apos;"));
+    let original_prompt_input = format!(
+        "<input type='hidden' name='original_prompt' value='{}'/>",
+        prompt_text.replace("'", "&apos;")
+    );
 
     // Generate a unique ID for context inputs to prevent conflicts
-    let context_id = format!("context_{}", std::time::SystemTime::now().elapsed().unwrap().as_millis());
-    
+    let context_id = format!(
+        "context_{}",
+        std::time::SystemTime::now().elapsed().unwrap().as_millis()
+    );
+
     Ok(Html(format!(
         "<div class='system-prompt-content'>\
           <textarea id='{}' class='full' autocomplete='off' rows='7' spellcheck='false' autocapitalize='off' autocorrect='off' \
            placeholder='Set AI behavior and constraints...' name='context'>{}</textarea>\
           <div class='persona-actions'>\
-            <button class='regenerate-prompt' hx-post='/chat/expand-prompt' \
+            <button class='regenerate-prompt icon-button' hx-post='/chat/expand-prompt' \
              hx-target='.system-prompt-content' hx-swap='outerHTML' \
              hx-include='[name=original_prompt],[name=context]' name='regenerate' value='true'>\
              <span class='default'>🔄</span>\
-             <span class='processing'>...</span>\
+             <span class='processing'>⏳</span>\
             </button>\
           </div>\
           {}\
@@ -431,6 +440,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         .route("/chat/message", post(change_chat_message))
         .route("/chat/regenerate", post(regenerate_message))
         .route("/style.css", get(get_style))
+        .route("/normalize.min.css", get(get_normalize))
+        .route("/open-props.css", get(get_open_props))
         .route("/htmx.js", get(get_htmx))
         .route("/chat/expand-prompt", post(expand_prompt))
         .with_state(AppState {

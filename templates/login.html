@@ -5,9 +5,7 @@
   <body>
     <div id="chat">
       <fieldset>
-        <legend>Conversation settings</legend>
-        <p>
-          <label for="username">Your name:</label>
+        <div>
           <input
             id="username"
             class="full"
@@ -17,10 +15,11 @@
             spellcheck="false"
             autocapitalize="off"
             autocorrect="off"
+            placeholder="Enter your name"
             autofocus
           />
-        </p>
-        <p>
+        </div>
+        <div>
           <button
             class="full"
             hx-post="/"
@@ -28,9 +27,9 @@
             hx-trigger="click, keyup[key=='Enter'] from:body"
             hx-include="[name=username]"
           >
-            Begin
+            Start
           </button>
-        </p>
+        </div>
       </fieldset>
     </div>
   </body>

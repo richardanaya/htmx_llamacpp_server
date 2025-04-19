@@ -1,16 +1,19 @@
 <div id="chat_{{id}}">
-    <a href="#" hx-post="/chat/message/edit" hx-trigger="click" hx-target="#chat_{{id}}" hx-swap="outerHTML"
-        hx-include="#chat_{{id}}" hx-vals='{"id":"{{id}}"}'>edit</a> <a href="#" hx-delete="/chat/message"
-        hx-trigger="click" hx-target="#chat_{{id}}" hx-swap="outerHTML">delete</a>
-    {% if role == "AI" %}
-    <a href="#" class="regenerate-link" hx-post="/chat/regenerate" hx-trigger="click" hx-target="#chat"
-        hx-swap="outerHTML show:bottom" hx-include="[name=context],[name=user_message],[name=content],[name=role]"
-        hx-vals='{"regenerate_index":"{{id}}"}'>
-        <span class="default">regenerate</span>
-        <span class="processing">processing...</span>
-    </a>
-    {% endif %}
-    <p>{{ role }} : {{ content }}</p>
+    <div class="message-actions">
+        <a href="#" hx-post="/chat/message/edit" hx-trigger="click" hx-target="#chat_{{id}}" hx-swap="outerHTML"
+            hx-include="#chat_{{id}}" hx-vals='{"id":"{{id}}"}'>✎ edit</a>
+        <a href="#" hx-delete="/chat/message" hx-trigger="click" hx-target="#chat_{{id}}" hx-swap="outerHTML">
+            🗑️ delete</a>
+        {% if role == "AI" %}
+        <a href="#" class="regenerate-link" hx-post="/chat/regenerate" hx-trigger="click" hx-target="#chat"
+            hx-swap="outerHTML show:bottom" hx-include="[name=context],[name=user_message],[name=content],[name=role]"
+            hx-vals='{"regenerate_index":"{{id}}"}'>
+            <span class="default">🔄 regenerate</span>
+            <span class="processing">⏳ processing...</span>
+        </a>
+        {% endif %}
+    </div>
+    <div><span class="role-indicator">{{ role }}</span>{{ content }}</div>
     <input type="hidden" name="role" value="{{ role }}" />
     <input type="hidden" name="content" value="{{ content }}" />
 </div>
