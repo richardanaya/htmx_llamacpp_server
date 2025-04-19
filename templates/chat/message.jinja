@@ -5,8 +5,9 @@
     {% if role == "AI" %}
     <a href="#" hx-post="/chat/regenerate" hx-trigger="click" hx-target="#chat"
         hx-swap="outerHTML show:bottom" hx-include="[name=context],[name=user_message],[name=content],[name=role]"
-        hx-indicator="#send" hx-vals='{"regenerate_index":"{{id}}"}'
-        hx-swap="innerHTML">regenerate</a>
+        hx-indicator="#send" hx-vals='{"regenerate_index":"{{id}}"}' 
+        hx-swap="innerHTML" hx-on::before-request="this.innerHTML='processing';" 
+        hx-on::after-request="this.innerHTML='regenerate';">regenerate</a>
     {% endif %}
     <p>{{ role }} : {{ content }}</p>
     <input type="hidden" name="role" value="{{ role }}" />
