@@ -2,24 +2,16 @@
 @import "./normalize.min.css";
 
 :root {
-  /* ‑‑‑ Brand palette (one‑liner hue or per‑step) */
-  --brand-hue: 280; /* 0‑360° = indigo‑violet */
-  /* or be explicit …                                             */
-  /* --brand-1: hsl(280 100% 97%);                                */
-  /* --brand-7: hsl(280 60% 45%);                                 */
-
-  /* ‑‑‑ Common UI surfaces & ink                                  */
-  --surface-1: hsl(0 0% 100%);
-  --surface-2: hsl(0 0% 96%);
-  --surface-3: hsl(0 0% 92%);
-  --text-1: hsl(0 0% 10%);
-  --text-2: hsl(0 0% 40%);
-
-  /* ‑‑‑ Accent behaviour                                          */
-  --link: var(--brand-7);
-
-  /* ‑‑‑ Typography tweaks                                         */
-  --font-sans: "Inter", system-ui, sans-serif;
+  --surface-1: #16161d; /* Eigengrau base */
+  --surface-2: #1e1e28; /* Slightly lighter */
+  --surface-3: #2a2a36; /* Even lighter */
+  --surface-4: #3d3d4e; /* Accent surface */
+  --text-1: #f0f0f5; /* Nearly white text */
+  --text-2: #9c9cb0; /* Softer secondary text */
+  --brand: var(--violet-5); /* Violet accent */
+  --brand-hover: var(--violet-4); /* Lighter on hover */
+  --error: var(--red-5);
+  --success: var(--green-5);
 
   --button-size: 2.5rem;
 }
