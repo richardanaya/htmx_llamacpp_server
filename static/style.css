@@ -454,3 +454,108 @@ figure > figcaption {
 iframe {
   border: 0.1rem solid var(--color-input-outline);
 }
+
+/* Custom styles for the persona system */
+.system-prompt-container {
+  position: relative;
+  display: flex;
+  gap: 0.5rem;
+  align-items: flex-start;
+}
+
+.system-prompt-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.persona-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 0.5rem;
+}
+
+.regenerate-prompt {
+  font-size: 1rem;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  background-color: var(--color-input-outline);
+  border: none;
+  color: var(--color-text);
+  cursor: pointer;
+  transition: background-color 0.2s, color 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+
+.regenerate-prompt:hover {
+  background-color: var(--color-text);
+  color: var(--color-input-background);
+}
+
+.regenerate-prompt .processing {
+  display: none;
+}
+
+.regenerate-prompt.htmx-request .default {
+  display: none;
+}
+
+.regenerate-prompt.htmx-request .processing {
+  display: inline;
+}
+
+button.expand-prompt {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  background-color: var(--color-input-outline);
+  border: none;
+  color: var(--color-text);
+  cursor: pointer;
+  transition: background-color 0.2s, color 0.2s;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  margin-top: 0.5rem;
+}
+
+button.expand-prompt:hover {
+  background-color: var(--color-text);
+  color: var(--color-input-background);
+}
+
+button.expand-prompt .processing {
+  display: none;
+}
+
+button.expand-prompt.htmx-request .default {
+  display: none;
+}
+
+button.expand-prompt.htmx-request .processing {
+  display: inline;
+}
+
+/* Regenerate link styling */
+.regenerate-link {
+  position: relative;
+}
+
+.regenerate-link .processing {
+  display: none;
+}
+
+.regenerate-link.htmx-request .default {
+  display: none;
+}
+
+.regenerate-link.htmx-request .processing {
+  display: inline;
+}

@@ -3,11 +3,12 @@
         hx-include="#chat_{{id}}" hx-vals='{"id":"{{id}}"}'>edit</a> <a href="#" hx-delete="/chat/message"
         hx-trigger="click" hx-target="#chat_{{id}}" hx-swap="outerHTML">delete</a>
     {% if role == "AI" %}
-    <a href="#" hx-post="/chat/regenerate" hx-trigger="click" hx-target="#chat"
+    <a href="#" class="regenerate-link" hx-post="/chat/regenerate" hx-trigger="click" hx-target="#chat"
         hx-swap="outerHTML show:bottom" hx-include="[name=context],[name=user_message],[name=content],[name=role]"
-        hx-indicator="#send" hx-vals='{"regenerate_index":"{{id}}"}' 
-        hx-swap="innerHTML" hx-on::before-request="this.innerHTML='processing';" 
-        hx-on::after-request="this.innerHTML='regenerate';">regenerate</a>
+        hx-vals='{"regenerate_index":"{{id}}"}'>
+        <span class="default">regenerate</span>
+        <span class="processing">processing...</span>
+    </a>
     {% endif %}
     <p>{{ role }} : {{ content }}</p>
     <input type="hidden" name="role" value="{{ role }}" />

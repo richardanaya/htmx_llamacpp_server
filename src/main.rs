@@ -147,7 +147,10 @@ struct LoginTemplate {}
 
 #[derive(Deserialize)]
 struct ExpandPromptRequest {
+    #[serde(default)]
     context: String,
+    original_prompt: Option<String>,
+    regenerate: Option<String>,
 }
 
 fn render_template(template: impl Template) -> Result<Html<String>, StatusCode> {
@@ -312,6 +315,17 @@ async fn expand_prompt(
     "#
     );
 
+    // Use original prompt if regenerating, otherwise use the current context
+    let prompt_text = if form.regenerate.is_some() && form.original_prompt.is_some() {
+        form.original_prompt.clone().unwrap()
+    } else {
+        form.context.clone()
+    };
+    
+    // Debug log to help diagnose
+    println!("Expand prompt: context='{}', original_prompt={:?}, regenerate={:?}", 
+        form.context, form.original_prompt, form.regenerate);
+
     let messages = vec![
         ChatMessage {
             role: "system".to_string(),
@@ -319,16 +333,36 @@ async fn expand_prompt(
         },
         ChatMessage {
             role: "user".to_string(),
-            content: format!("Create a detailed persona prompt for: {}\n\nMake this persona distinctive, memorable, and practical for real conversations.", form.context.clone()),
+            content: format!("Create a detailed persona prompt for: {}\n\nMake this persona distinctive, memorable, and practical for real conversations.", prompt_text),
         },
     ];
 
     let response = send_ai_message(&state.url, messages).await?;
 
+    // Store the original prompt text in a hidden input
+    let original_prompt_input = format!("<input type='hidden' name='original_prompt' value='{}'/>", 
+        prompt_text.replace("'", "&apos;"));
+
+    // Generate a unique ID for context inputs to prevent conflicts
+    let context_id = format!("context_{}", std::time::SystemTime::now().elapsed().unwrap().as_millis());
+    
     Ok(Html(format!(
-        "<textarea id='context' class='full' autocomplete='off' rows='10 spellcheck='false' autocapitalize='off' autocorrect='off' \
-         placeholder='Set AI behavior and constraints...' name='context'>{}</textarea>",
-        response.replace("'", "&apos;")
+        "<div class='system-prompt-content'>\
+          <textarea id='{}' class='full' autocomplete='off' rows='7' spellcheck='false' autocapitalize='off' autocorrect='off' \
+           placeholder='Set AI behavior and constraints...' name='context'>{}</textarea>\
+          <div class='persona-actions'>\
+            <button class='regenerate-prompt' hx-post='/chat/expand-prompt' \
+             hx-target='.system-prompt-content' hx-swap='outerHTML' \
+             hx-include='[name=original_prompt],[name=context]' name='regenerate' value='true'>\
+             <span class='default'>🔄</span>\
+             <span class='processing'>...</span>\
+            </button>\
+          </div>\
+          {}\
+        </div>",
+        context_id,
+        response.replace("'", "&apos;"),
+        original_prompt_input
     )))
 }
 

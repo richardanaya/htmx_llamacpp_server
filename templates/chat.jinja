@@ -16,14 +16,15 @@
     <p>
       <label for="context">System Prompt:</label>
       <div class="system-prompt-container">
-        <input id="context" class="full" autocomplete="off" spellcheck="false" autocapitalize="off" autocorrect="off"
-          placeholder="Set AI behavior and constraints..." type="text" name="context" value="{{ context }}" {% if context.len()==0
-          %} autofocus {% endif %} />
+        <div class="system-prompt-content">
+          <input id="context" class="full" autocomplete="off" spellcheck="false" autocapitalize="off" autocorrect="off"
+            placeholder="Set AI behavior and constraints..." type="text" name="context" value="{{ context }}" {% if context.len()==0
+            %} autofocus {% endif %} />
+        </div>
         <button class="expand-prompt" hx-post="/chat/expand-prompt" 
-          hx-target="#context" 
+          hx-target=".system-prompt-content" 
           hx-include="[name=context]"
-          hx-swap="outerHTML"
-          title="Expand system prompt using AI">
+          hx-swap="outerHTML">
           <span class="default">✨</span>
           <span class="processing">...</span>
         </button>
