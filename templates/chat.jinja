@@ -14,12 +14,13 @@
     <div>
       <div class="system-prompt-container">
         <div class="system-prompt-content">
+          <input id="original_prompt" type="hidden" name="original_prompt" value="" />
           <input id="context" class="full" autocomplete="off" spellcheck="false" autocapitalize="off" autocorrect="off"
             placeholder="Set AI behavior and constraints..." type="text" name="context" value="{{ context }}" {% if
             context.len()==0 %} autofocus {% endif %} />
         </div>
         <button class="expand-prompt icon-button" hx-post="/chat/expand-prompt" hx-target=".system-prompt-content"
-          hx-include="[name=context]" hx-swap="outerHTML">
+          hx-include="[name=context],[name=original_prompt]" hx-swap="outerHTML">
           <span class="default">✨</span>
           <span class="processing">⏳</span>
         </button>
