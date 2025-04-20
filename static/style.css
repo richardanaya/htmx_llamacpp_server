@@ -89,3 +89,19 @@ button.htmx-request .default {
 button.htmx-request .processing {
   display: inline;
 }
+
+a .default {
+  display: inline;
+}
+
+a .processing {
+  display: none;
+}
+
+a.htmx-request .default {
+  display: none;
+}
+
+a.htmx-request .processing {
+  display: inline;
+}
