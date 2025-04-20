@@ -40,18 +40,6 @@ button .default {
   display: inline;
 }
 
-button .processing {
-  display: none;
-}
-
-button.htmx-request .default {
-  display: none;
-}
-
-button.htmx-request .processing {
-  display: inline;
-}
-
 button.expand-prompt .default {
   display: inline;
 }
@@ -88,4 +76,16 @@ main {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+button .processing {
+  display: none;
+}
+
+button.htmx-request .default {
+  display: none;
+}
+
+button.htmx-request .processing {
+  display: inline;
 }
