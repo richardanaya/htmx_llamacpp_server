@@ -281,14 +281,6 @@ async fn get_theme() -> Css<String> {
     Css(include_str!("../static/theme.css").to_string())
 }
 
-async fn get_normalize() -> Css<String> {
-    Css(include_str!("../static/normalize.min.css").to_string())
-}
-
-async fn get_open_props() -> Css<String> {
-    Css(include_str!("../static/open-props.css").to_string())
-}
-
 async fn get_htmx() -> Result<JavaScript<String>> {
     Ok(JavaScript(include_str!("../static/htmx.js").to_string()))
 }
@@ -350,7 +342,7 @@ async fn expand_prompt(
     let response = send_ai_message(&state.url, messages).await?;
 
     Ok(Html(format!(
-        "<div class='system-prompt-content'>\
+        "<div class='system-prompt-content grow'>\
           <input id='original_context' type='hidden' name='original_context' value='{}'>\
           <textarea id='context' class='full' autocomplete='off' rows='7' spellcheck='false' autocapitalize='off' autocorrect='off' \
            placeholder='Set AI behavior and constraints...' name='context'>{}</textarea>\
@@ -427,8 +419,6 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         .route("/ambrosia.css", get(get_ambrosia))
         .route("/theme.css", get(get_theme))
         .route("/style.css", get(get_style))
-        .route("/normalize.min.css", get(get_normalize))
-        .route("/open-props.css", get(get_open_props))
         .route("/htmx.js", get(get_htmx))
         .route("/chat/expand-prompt", post(expand_prompt))
         .with_state(AppState {

@@ -1,3 +1,73 @@
+#chat {
+  overflow: scroll;
+  width: 95%;
+  min-height: 95%;
+  display: flex;
+  gap: var(--size-2);
+  flex-direction: column;
+}
+
+.full {
+  width: 100%;
+}
+
+.grow {
+  flex-grow: 1;
+}
+
+html,
+body {
+  overscroll-behavior: none;
+}
+
+.system-prompt-content {
+  align-items: center;
+  display: flex;
+}
+
+.system-prompt-container {
+  display: flex;
+  gap: 8px;
+}
+
+.expand-prompt {
+  padding: 0 12px;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+button .default {
+  display: inline;
+}
+
+button .processing {
+  display: none;
+}
+
+button.htmx-request .default {
+  display: none;
+}
+
+button.htmx-request .processing {
+  display: inline;
+}
+
+button.expand-prompt .default {
+  display: inline;
+}
+
+button.expand-prompt .processing {
+  display: none;
+}
+
+button.expand-prompt.htmx-request .default {
+  display: none;
+}
+
+button.expand-prompt.htmx-request .processing {
+  display: inline;
+}
+
 /* centered main */
 body {
   display: flex;
@@ -14,6 +84,8 @@ main {
   margin: var(--size-2);
 }
 
-.full {
-  width: 100%;
+.flex-centered-row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }

@@ -13,14 +13,16 @@
     {% if messages.len() == 0 %}
     <div>
       <div class="system-prompt-container">
-        <div class="system-prompt-content">
+        <div class="system-prompt-content grow">
           <input id="original_prompt" type="hidden" name="original_prompt" value="" />
-          <input id="context" class="full" autocomplete="off" spellcheck="false" autocapitalize="off" autocorrect="off"
-            placeholder="Set AI behavior and constraints..." type="text" name="context" value="{{ context }}" {% if
-            context.len()==0 %} autofocus {% endif %} />
+          <label class="field full">
+            <input id="context" autocomplete="off" spellcheck="false" autocapitalize="off" autocorrect="off"
+              placeholder="Set AI behavior and constraints..." type="text" name="context" value="{{ context }}" {% if
+              context.len()==0 %} autofocus {% endif %} />
+          </label>
         </div>
-        <button class="expand-prompt icon-button" hx-post="/chat/expand-prompt" hx-target=".system-prompt-content"
-          hx-include="[name=context],[name=original_prompt]" hx-swap="outerHTML">
+        <button class="button outlined small" aria-label="Button label" hx-post="/chat/expand-prompt"
+          hx-target=".system-prompt-content" hx-include="[name=context],[name=original_prompt]" hx-swap="outerHTML">
           <span class="default">✨</span>
           <span class="processing">⏳</span>
         </button>
@@ -31,24 +33,27 @@
     <input id="context" type="hidden" name="context" value="{{ context }}" />
     {% endif %}
     <div>
-      <input id="user_message" class="full" autocomplete="off" spellcheck="false" autocapitalize="off" autocorrect="off"
-        placeholder="Hello, robot ..." type="text" name="user_message" value="{{ user_message }}" {% if context.len()>0
-      %} autofocus {% endif %} />
+      <label class="field full">
+        <input id="user_message" autocomplete="off" spellcheck="false" autocapitalize="off" autocorrect="off"
+          placeholder="Hello, robot ..." type="text" name="user_message" value="{{ user_message }}" {% if
+          context.len()>0
+        %} autofocus {% endif %} />
+      </label>
     </div>
     <div>
-      <button id="send" class="full" hx-post="/chat"
+      <button id="send" class="button outlined full" hx-post="/chat"
         hx-trigger="click queue:none, keyup[key=='Enter'] from:body queue:none" hx-target="#chat"
         hx-swap="outerHTML show:bottom" hx-include="[name=context],[name=user_message],[name=content],[name=role]"
         hx-indicator="#send">
         <span class="default">Send</span><span class="processing">Processing...</span>
       </button>
     </div>
-    <div style="display: flex; gap: var(--size-2); padding-top: var(--size-3);">
-      <button class="button" hx-post="/chat/clear" hx-trigger="click" hx-target="#chat" hx-swap="outerHTML show:bottom"
-        hx-include="[name=context]">
+    <div role="group" class="button-group">
+      <button class="button outlined full" hx-post="/chat/clear" hx-trigger="click" hx-target="#chat"
+        hx-swap="outerHTML show:bottom" hx-include="[name=context]">
         Clear
       </button>
-      <button class="button" hx-delete="/" hx-trigger="click" hx-target="body">
+      <button class="button outlined full" hx-delete="/" hx-trigger="click" hx-target="body">
         Restart
       </button>
     </div>
