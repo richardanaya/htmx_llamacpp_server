@@ -1,27 +1,30 @@
 <!-- let's make a chat interface using jinja -->
 <!DOCTYPE html>
-<html>
+<html class="dark">
   {% include "head.html" %}
   <body>
     <div id="chat">
       <fieldset>
         <div>
-          <input
-            id="username"
-            class="full"
-            type="text"
-            name="username"
-            autocomplete="off"
-            spellcheck="false"
-            autocapitalize="off"
-            autocorrect="off"
-            placeholder="Enter your name"
-            autofocus
-          />
+          <label class="field">
+            <span class="label">Enter your name</span>
+            <input
+              id="username"
+              class="full"
+              type="text"
+              name="username"
+              autocomplete="off"
+              spellcheck="false"
+              autocapitalize="off"
+              autocorrect="off"
+              placeholder=""
+              autofocus
+            />
+          </label>
         </div>
         <div>
           <button
-            class="full"
+            class="button outlined full"
             hx-post="/"
             hx-target="body"
             hx-trigger="click, keyup[key=='Enter'] from:body"

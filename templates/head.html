@@ -1,65 +1,8 @@
 <head>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Morpheus</title>
-  <style>
-    .chat {
-      min-height: 300px;
-      width: 300px;
-      width: 100%;
-      overflow: scroll;
-    }
-    .full {
-      width: 100%;
-    }
-
-    button .default {
-      display: inline;
-    }
-
-    button .processing {
-      display: none;
-    }
-
-    button.htmx-request .default {
-      display: none;
-    }
-
-    button.htmx-request .processing {
-      display: inline;
-    }
-
-    html,
-    body {
-      overscroll-behavior: none;
-    }
-
-    .system-prompt-container {
-      display: flex;
-      gap: 8px;
-    }
-
-    .expand-prompt {
-      padding: 0 12px;
-      white-space: nowrap;
-      cursor: pointer;
-    }
-
-    button.expand-prompt .default {
-      display: inline;
-    }
-
-    button.expand-prompt .processing {
-      display: none;
-    }
-
-    button.expand-prompt.htmx-request .default {
-      display: none;
-    }
-
-    button.expand-prompt.htmx-request .processing {
-      display: inline;
-    }
-  </style>
+  <link rel="stylesheet" href="/ambrosia.css" />
+  <link rel="stylesheet" href="/theme.css" />
   <link rel="stylesheet" href="/style.css" />
   <script src="./htmx.js"></script>
 </head>

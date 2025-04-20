@@ -273,6 +273,14 @@ async fn get_style() -> Css<String> {
     Css(include_str!("../static/style.css").to_string())
 }
 
+async fn get_ambrosia() -> Css<String> {
+    Css(include_str!("../static/ambrosia.css").to_string())
+}
+
+async fn get_theme() -> Css<String> {
+    Css(include_str!("../static/theme.css").to_string())
+}
+
 async fn get_normalize() -> Css<String> {
     Css(include_str!("../static/normalize.min.css").to_string())
 }
@@ -416,6 +424,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         .route("/chat/message/edit", post(edit_chat_message))
         .route("/chat/message", post(change_chat_message))
         .route("/chat/regenerate", post(regenerate_message))
+        .route("/ambrosia.css", get(get_ambrosia))
+        .route("/theme.css", get(get_theme))
         .route("/style.css", get(get_style))
         .route("/normalize.min.css", get(get_normalize))
         .route("/open-props.css", get(get_open_props))
