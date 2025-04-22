@@ -207,10 +207,6 @@ async fn send_ai_message(url: &str, messages: Vec<ChatMessage>) -> Result<String
 
     let response = body.choices[0].message.content.clone();
 
-    return Ok(response.trim().to_string());
-}
-
-fn strip_think(response: &str) -> String {
     // we need to get the substring after </think>
     let response = response.split("</think>");
     // if theres more than 1 part, we need to get the last one
@@ -219,7 +215,8 @@ fn strip_think(response: &str) -> String {
     } else {
         response.collect::<Vec<&str>>()[0].to_string()
     };
-    response.trim().to_string()
+
+    return Ok(response.trim().to_string());
 }
 
 async fn send_message(
@@ -258,8 +255,8 @@ async fn send_message(
     let response = send_ai_message(&state.url, ai_messages).await?;
 
     chat_messages.push(ChatMessage {
-        role: "assistant".to_string(),
-        content: strip_think(&response),
+        role: "AI".to_string(),
+        content: response,
     });
 
     let context_input = form.context;
@@ -353,7 +350,9 @@ async fn expand_prompt(
     * If the user is asking for certain formatting, show an example of the formatting.  
     * If the user wants no emojis, show no emojis.
 
-    This is important so your responses arent just random sentences, but actual contextual respnose to the user.
+    This is important so your responses arent just random sentences, but actual contextual response to the user.
+
+    The persona MUST NOT sound robotic or random, it must sound like like typical conversation.
     
     Format the prompt in clear paragraphs with appropriate spacing for readability.
     "#
@@ -412,15 +411,15 @@ async fn regenerate_message(
 
     let mut ai_messages = vec![ChatMessage {
         role: "system".to_string(),
-        content: strip_think(&form.context.clone()),
+        content: form.context.clone(),
     }];
     ai_messages.extend(chat_messages.iter().cloned());
 
     let response = send_ai_message(&state.url, ai_messages).await?;
 
     chat_messages.push(ChatMessage {
-        role: "assistant".to_string(),
-        content: strip_think(&response),
+        role: "AI".to_string(),
+        content: response,
     });
 
     render_template(ChatFragmentTemplate {
