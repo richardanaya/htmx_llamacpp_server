@@ -301,6 +301,16 @@ async fn change_chat_message(
     render_template(modify_msg)
 }
 
+async fn clear_prompt() -> Result<Html<String>, StatusCode> {
+    Ok(Html(format!(
+        "<div class='system-prompt-content grow'>\
+          <input id='original_prompt' type='hidden' name='original_prompt' value=''>\
+          <textarea id='context' class='full' autocomplete='off' rows='7' spellcheck='false' autocapitalize='off' autocorrect='off' \
+           placeholder='Set AI behavior and constraints...' name='context'></textarea>\
+        </div>",
+    )))
+}
+
 async fn expand_prompt(
     State(state): State<AppState>,
     Form(form): Form<ExpandPromptRequest>,
@@ -343,11 +353,11 @@ async fn expand_prompt(
 
     Ok(Html(format!(
         "<div class='system-prompt-content grow'>\
-          <input id='original_context' type='hidden' name='original_context' value='{}'>\
+          <input id='original_prompt' type='hidden' name='original_prompt' value='{}'>\
           <textarea id='context' class='full' autocomplete='off' rows='7' spellcheck='false' autocapitalize='off' autocorrect='off' \
            placeholder='Set AI behavior and constraints...' name='context'>{}</textarea>\
         </div>",
-        new_original_prompt,
+        new_original_prompt.replace("'", "&apos;"),
         response.replace("'", "&apos;")
     )))
 }
@@ -421,6 +431,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         .route("/style.css", get(get_style))
         .route("/htmx.js", get(get_htmx))
         .route("/chat/expand-prompt", post(expand_prompt))
+        .route("/chat/clear-prompt", post(clear_prompt))
         .with_state(AppState {
             key: Key::generate(),
             url: format!("{}/v1/chat/completions", args.llamma_cpp_server).to_string(),

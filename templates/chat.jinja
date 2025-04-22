@@ -26,6 +26,11 @@
           <span class="default">✨</span>
           <span class="processing">⏳</span>
         </button>
+        <button class="button outlined small" aria-label="Button label" hx-post="/chat/clear-prompt"
+          hx-target=".system-prompt-content" hx-swap="outerHTML">
+          <span class="default">❌</span>
+          <span class="processing">⏳</span>
+        </button>
       </div>
     </div>
     {% endif %}
