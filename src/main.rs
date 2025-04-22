@@ -355,7 +355,7 @@ async fn expand_prompt(
         "<div class='system-prompt-content grow'>\
           <input id='original_prompt' type='hidden' name='original_prompt' value='{}'>\
           <textarea id='context' class='full' autocomplete='off' rows='7' spellcheck='false' autocapitalize='off' autocorrect='off' \
-           placeholder='Set AI behavior and constraints...' name='context'>{}</textarea>\
+           placeholder='Set AI behavior and constraints...' name='context' disabled>{}</textarea>\
         </div>",
         new_original_prompt.replace("'", "&apos;"),
         response.replace("'", "&apos;")

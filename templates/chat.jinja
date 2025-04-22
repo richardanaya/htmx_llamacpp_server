@@ -21,16 +21,18 @@
               context.len()==0 %} autofocus {% endif %} />
           </label>
         </div>
-        <button class="button outlined small" aria-label="Button label" hx-post="/chat/expand-prompt"
-          hx-target=".system-prompt-content" hx-include="[name=context],[name=original_prompt]" hx-swap="outerHTML">
-          <span class="default">✨</span>
-          <span class="processing">⏳</span>
-        </button>
-        <button class="button outlined small" aria-label="Button label" hx-post="/chat/clear-prompt"
-          hx-target=".system-prompt-content" hx-swap="outerHTML">
-          <span class="default">❌</span>
-          <span class="processing">⏳</span>
-        </button>
+        <div role="group" class="button-group">
+          <button class="button outlined small" aria-label="Button label" hx-post="/chat/expand-prompt"
+            hx-target=".system-prompt-content" hx-include="[name=context],[name=original_prompt]" hx-swap="outerHTML">
+            <span class="default">✨</span>
+            <span class="processing">⏳</span>
+          </button>
+          <button class="button outlined small" aria-label="Button label" hx-post="/chat/clear-prompt"
+            hx-target=".system-prompt-content" hx-swap="outerHTML">
+            <span class="default">🗑️</span>
+            <span class="processing">⏳</span>
+          </button>
+        </div>
       </div>
     </div>
     {% endif %}
