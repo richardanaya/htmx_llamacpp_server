@@ -344,6 +344,13 @@ async fn expand_prompt(
     6. Avoid technical formatting like XML, JSON, or markdown
     7. Include personality traits that make interactions engaging and human-like
     8. Specify any ethical boundaries or guidelines the persona should follow
+
+    Lastly, you MUST describe in detail the kind of response format the persona should use for maximal readability by the user. 
+    * If the user is asking to always return 1 paragraph, show an example of 1 paragraph.  
+    * If the user is asking for certain formatting, show an example of the formatting.  
+    * If the user wants no emojis, show no emojis.
+
+    This is important so your responses arent just random sentences, but actual contextual respnose to the user.
     
     Format the prompt in clear paragraphs with appropriate spacing for readability.
     "#
