@@ -208,8 +208,15 @@ async fn send_ai_message(url: &str, messages: Vec<ChatMessage>) -> Result<String
     let response = body.choices[0].message.content.clone();
 
     // we need to get the substring after </think>
-    let response = response.split("</think>").collect::<Vec<&str>>()[1].to_string();
-    return Ok(response);
+    let response = response.split("</think>");
+    // if theres more than 1 part, we need to get the last one
+    let response = if response.clone().count() > 1 {
+        response.last().unwrap_or(&"").to_string()
+    } else {
+        response.collect::<Vec<&str>>()[0].to_string()
+    };
+
+    return Ok(response.trim().to_string());
 }
 
 async fn send_message(
