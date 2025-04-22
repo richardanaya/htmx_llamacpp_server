@@ -205,11 +205,11 @@ async fn send_ai_message(url: &str, messages: Vec<ChatMessage>) -> Result<String
         Err(_) => return Err(StatusCode::INTERNAL_SERVER_ERROR),
     };
 
-    let response = body.choices[0].message.content.clone()
+    let response = body.choices[0].message.content.clone();
 
     // we need to get the substring after </think>
     let response = response.split("</think>").collect::<Vec<&str>>()[1].to_string();
-    return Ok(response); 
+    return Ok(response);
 }
 
 async fn send_message(
