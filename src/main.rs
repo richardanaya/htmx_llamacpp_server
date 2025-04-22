@@ -210,6 +210,18 @@ async fn send_ai_message(url: &str, messages: Vec<ChatMessage>) -> Result<String
     return Ok(response.trim().to_string());
 }
 
+fn strip_think(response: &str) -> String {
+    // we need to get the substring after </think>
+    let response = response.split("</think>");
+    // if theres more than 1 part, we need to get the last one
+    let response = if response.clone().count() > 1 {
+        response.last().unwrap_or(&"").to_string()
+    } else {
+        response.collect::<Vec<&str>>()[0].to_string()
+    };
+    response.trim().to_string()
+}
+
 async fn send_message(
     jar: PrivateCookieJar,
     State(state): State<AppState>,
@@ -237,27 +249,17 @@ async fn send_message(
         content: form.user_message.clone(),
     });
 
-    let response = form.context.clone();
-    // we need to get the substring after </think>
-    let response = response.split("</think>");
-    // if theres more than 1 part, we need to get the last one
-    let response = if response.clone().count() > 1 {
-        response.last().unwrap_or(&"").to_string()
-    } else {
-        response.collect::<Vec<&str>>()[0].to_string()
-    };
-
     let mut ai_messages = vec![ChatMessage {
         role: "system".to_string(),
-        content: response.trim().to_string(),
+        content: form.context.clone(),
     }];
     ai_messages.extend(chat_messages.iter().cloned());
 
     let response = send_ai_message(&state.url, ai_messages).await?;
 
     chat_messages.push(ChatMessage {
-        role: "AI".to_string(),
-        content: response,
+        role: "assistant".to_string(),
+        content: strip_think(&response),
     });
 
     let context_input = form.context;
@@ -408,27 +410,17 @@ async fn regenerate_message(
         }
     }
 
-    let response = form.context.clone();
-    // we need to get the substring after </think>
-    let response = response.split("</think>");
-    // if theres more than 1 part, we need to get the last one
-    let response = if response.clone().count() > 1 {
-        response.last().unwrap_or(&"").to_string()
-    } else {
-        response.collect::<Vec<&str>>()[0].to_string()
-    };
-
     let mut ai_messages = vec![ChatMessage {
         role: "system".to_string(),
-        content: response.trim().to_string(),
+        content: strip_think(&form.context.clone()),
     }];
     ai_messages.extend(chat_messages.iter().cloned());
 
     let response = send_ai_message(&state.url, ai_messages).await?;
 
     chat_messages.push(ChatMessage {
-        role: "AI".to_string(),
-        content: response,
+        role: "assistant".to_string(),
+        content: strip_think(&response),
     });
 
     render_template(ChatFragmentTemplate {
