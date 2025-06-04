@@ -1,4 +1,4 @@
-<div id="chat_{{id}}">
+<div id="chat_{{id}}" class="message {% if role == "AI" %}ai-message{% else %}user-message{% endif %}">
     <div class="message-actions">
         <a href="#" hx-post="/chat/message/edit" hx-trigger="click" hx-target="#chat_{{id}}" hx-swap="outerHTML"
             hx-include="#chat_{{id}}" hx-vals='{"id":"{{id}}"}'>edit</a>

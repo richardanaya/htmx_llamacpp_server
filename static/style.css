@@ -63,6 +63,8 @@ body {
   align-items: center;
   height: 100vh;
   margin: 0;
+  font-family: system-ui, sans-serif;
+  background-color: var(--gray-0);
 }
 /* centered main  with max width*/
 main {
@@ -104,4 +106,22 @@ a.htmx-request .default {
 
 a.htmx-request .processing {
   display: inline;
+}
+
+.message {
+  padding: var(--size-2);
+  border-radius: var(--radius-2);
+  max-width: 70%;
+  margin-bottom: var(--size-2);
+}
+
+.ai-message {
+  align-self: flex-start;
+  background-color: var(--gray-3);
+}
+
+.user-message {
+  align-self: flex-end;
+  background-color: var(--indigo-5);
+  color: white;
 }
