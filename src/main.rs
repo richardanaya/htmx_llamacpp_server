@@ -236,7 +236,10 @@ async fn send_message(
         .iter()
         .enumerate()
         .map(|(i, x)| ChatMessage {
-            role: all_roles[i].clone(),
+            role: all_roles
+                .get(i)
+                .cloned()
+                .unwrap_or_else(|| "user".to_string()),
             content: x.clone(),
         })
         .collect();
@@ -398,7 +401,10 @@ async fn regenerate_message(
         .iter()
         .enumerate()
         .map(|(i, x)| ChatMessage {
-            role: all_roles[i].clone(),
+            role: all_roles
+                .get(i)
+                .cloned()
+                .unwrap_or_else(|| "user".to_string()),
             content: x.clone(),
         })
         .collect();
